@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="main.css" rel="stylesheet" />
+</head>
+<body>
+    Hello World!
+
+    <p><input id="cim" type="text" placeholder="Add meg itt a könyv címét..." /></p>
+    <p><input id="szerzo" type="text" placeholder="Add meg itt a könyv szerzőjét..." /></p>
+    <p><input id="ev" type="text" placeholder="Add meg itt a könyv kiadásának dátumát..." /></p>
+    <p><input id="mufaj" type="text" placeholder="Add meg itt a könyv műfaját..." /></p>
+    <p><input id="elerheto" type="checkbox" placeholder="Add meg itt a könyv elérhetőségét..." /></p>
+    <p><button id="ujrogzitoGomb">Rögzítés!</button></p>
+
+    <p><button id="megjelenitoGomb">Összes gomb megjelenítése</button></p>
+
+    <p><input id="torlesId" type="number" placeholder="Törlendő rekord..." /></p>
+    <p><button id="torlesGomb">Törlés!</button></p>
+
+    <h1>Könyvek</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cím</th>
+                <th>Szerző</th>
+                <th>Kiadás Éve</th>
+                <th>Műfaj</th>
+                <th>Elérhetőség</th>
+            </tr>
+        </thead>
+        <tbody id="tb_konyvek">
+        </tbody>
+    </table>
+
+    <script>
+
+        document.getElementById("torlesGomb").addEventListener("click", () => {
+            var bookId = document.getElementById("torlesId").value;
+
+            if (!bookId) {
+                alert("Kérlek, add meg a könyv ID-ját!");
+                return;
+            }
+
+            fetch(`api/book/${bookId}`, {
+                method: "DELETE"
+            }).then(r => {
+                if (r.ok) {
+                    alert("A könyv sikeresen törölve!");
+                } else {
+                    alert("Hiba történt a törlés során.");
+                }
+            });
+        });
+
+
+        document.getElementById("ujrogzitoGomb").addEventListener("click", () => {
+
+            var bookData = {
+                //id NINCS
+                "title": document.getElementById("cim").value,
+                "author": document.getElementById("szerzo").value,
+                "year": document.getElementById("ev").value,
+                "genre": document.getElementById("mufaj").value,
+                "isAvailable": document.getElementById("elerheto").checked == "ok"
+            }
+
+            fetch("api/book",
+                {
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(bookData)
+                }
+            ).then(r => {
+                if (r.ok) {
+                    alert("Siker!!!s")
+                } else {
+                    alert("Hiba...")
+                }
+            })
+
+            /*.then(r => r.json()).then(o => {
+                console.log("POST:", o);
+            })*/
+        })
+
+        document.getElementById("megjelenitoGomb").addEventListener("click", () => {
+
+            fetch("api/book").then(r => r.json()).then(o => {
+
+                let tbody = document.getElementById("tb_konyvek");
+                tbody.innerHTML = "";
+
+                console.log("Sikeres GET!");
+                console.log(o); //console.log("GET:", o);
+
+                var tabla = document.getElementById("tb_konyvek");
+
+                for (var i = 0; i < o.length; i++) {
+                    var sor = document.createElement("tr");
+                    sor.innerHTML = `
+                                                    <td>${o[i].id}</td>
+                                                    <td>${o[i].title}</td>
+                                                    <td>${o[i].author}</td>
+                                                    <td>${o[i].year}</td>
+                                                    <td>${o[i].genre}</td>
+                                                    <td>${o[i].isAvailable}</td>
+                                                `;
+
+                    tabla.appendChild(sor);
+
+                    /*o.forEach(e => {
+                        let tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${e.id}</td>
+                            <td>${e.title}</td>
+                            <td>${e.author}</td>
+                            <td>${e.year}</td>
+                            <td>${e.genre}</td>
+                            <td>${e.isAvailable}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    })*/
+                }
+            })
+        })
+    </script>
+</body>
+</html>
