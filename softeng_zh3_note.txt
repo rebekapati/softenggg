@@ -1,0 +1,5 @@
+Scaffold-DbContext "Data Source=szoftweng.database.windows.net;Initial Catalog=softeng_Library;Persist Security Info=True;User ID=apatir;Password=Password123;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+Az adatbázis adatainak forrásmegjelölése értsd: miből készült és hogyan:
+	A táblákat Azure Data Studioban hoztam létre a megfelelő tulajdonságokkal amiket szerettem volna megadni nekik. Ezután ezt megadva a ChatGPT-nek kértem tőle, hogy generáljon a táblák rekord típusainak megfelelően randomizált adatokat.
+
